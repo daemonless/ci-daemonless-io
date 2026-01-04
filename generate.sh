@@ -9,8 +9,8 @@ cat > "$OUTPUT" << 'EOF'
 
 Build status for daemonless container images.
 
-| App | Status |
-|-----|--------|
+| App | Status | Last Commit |
+|-----|--------|-------------|
 EOF
 
 # Get all public repos in daemonless org that have build.yml
@@ -22,7 +22,7 @@ gh repo list daemonless --limit 100 --json name,isPrivate --jq '.[] | select(.is
 
     # Check if repo has build.yml workflow
     if gh api "repos/daemonless/$repo/contents/.github/workflows/build.yml" >/dev/null 2>&1; then
-        echo "| $repo | [![$repo](https://img.shields.io/github/actions/workflow/status/daemonless/$repo/build.yml?label=)](https://github.com/daemonless/$repo/actions/workflows/build.yml) |" >> "$OUTPUT"
+        echo "| $repo | [![build](https://img.shields.io/github/actions/workflow/status/daemonless/$repo/build.yml?label=)](https://github.com/daemonless/$repo/actions/workflows/build.yml) | [![commit](https://img.shields.io/github/last-commit/daemonless/$repo?label=)](https://github.com/daemonless/$repo/commits) |" >> "$OUTPUT"
     fi
 done
 
