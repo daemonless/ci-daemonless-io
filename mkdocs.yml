@@ -3,6 +3,7 @@ site_url: https://ci.daemonless.io
 
 theme:
   name: material
+  logo: assets/daemonless-logo.svg
   favicon: assets/favicon.ico
   palette:
     scheme: slate
