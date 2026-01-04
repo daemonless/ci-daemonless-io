@@ -38,4 +38,4 @@ Build status for daemonless container images.
 | uptime-kuma | [![uptime-kuma](https://img.shields.io/github/actions/workflow/status/daemonless/uptime-kuma/build.yml?label=)](https://github.com/daemonless/uptime-kuma/actions/workflows/build.yml) |
 | vaultwarden | [![vaultwarden](https://img.shields.io/github/actions/workflow/status/daemonless/vaultwarden/build.yml?label=)](https://github.com/daemonless/vaultwarden/actions/workflows/build.yml) |
 
-*Updated: 2026-01-04 21:57 UTC*
+*Updated: 2026-01-04 21:59 UTC*
