@@ -11,3 +11,4 @@ theme:
 
 nav:
   - Status: index.md
+  - CIT: cit.md
