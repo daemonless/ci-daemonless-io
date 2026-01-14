@@ -26,14 +26,13 @@ jobs:
           python-version: '3.x'
 
       - name: Install dependencies
-        run: pip install mkdocs-material
+        run: pip install mkdocs-material PyYAML
 
       - name: Regenerate status page
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          chmod +x generate.sh
-          ./generate.sh
+          python3 generate_status.py
 
       - name: Commit updated page
         run: |
