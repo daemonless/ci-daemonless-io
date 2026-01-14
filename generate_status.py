@@ -13,31 +13,67 @@ OUTPUT_FILE = "docs/index.md"
 SKIP_REPOS = {"daemonless", "cit", "ci-daemonless-io", "freebsd-ports", "daemonless-io"}
 
 def gh_json(command):
+
     """Run gh command and return JSON."""
+
     try:
+
         result = subprocess.run(
+
             command, capture_output=True, text=True, check=True
+
         )
+
+        if not result.stdout.strip():
+
+            return None
+
         return json.loads(result.stdout)
-    except subprocess.CalledProcessError:
+
+    except (subprocess.CalledProcessError, json.JSONDecodeError):
+
         return None
 
+
+
 def get_repos():
+
     """Get list of public repos."""
+
     print("Fetching repository list...")
-    cmd = ["gh", "repo", "list", "daemonless", "--limit", "100", "--json", "name,isPrivate", "--jq", "[ .[] | select(.isPrivate == false)]"]
-    return gh_json(cmd)
+
+    cmd = ["gh", "repo", "list", "daemonless", "--limit", "100", "--json", "name,isPrivate"]
+
+    data = gh_json(cmd)
+
+    if data:
+
+        return [r for r in data if not r['isPrivate']]
+
+    return []
+
+
 
 def get_file_content(repo, path):
+
     """Fetch file content from repo."""
-    cmd = ["gh", "api", f"repos/daemonless/{repo}/contents/{path}", "--jq", ".content"]
+
+    cmd = ["gh", "api", f"repos/daemonless/{repo}/contents/{path}"]
+
     data = gh_json(cmd)
-    if data:
+
+    if data and isinstance(data, dict) and 'content' in data:
+
         import base64
+
         try:
-            return base64.b64decode(data).decode('utf-8')
-        except:
-            pass
+
+            return base64.b64decode(data['content']).decode('utf-8')
+
+        except Exception as e:
+
+            print(f"Error decoding {repo}/{path}: {e}")
+
     return None
 
 def main():
