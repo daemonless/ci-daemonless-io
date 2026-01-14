@@ -106,9 +106,12 @@ def main():
         if not has_ci:
             continue
 
-        # Get Category from compose.yaml
+        # Get Category from compose.yaml or container-compose.yml
         category = "Uncategorized"
         compose_content = get_file_content(name, "compose.yaml")
+        if not compose_content:
+            compose_content = get_file_content(name, "container-compose.yml")
+            
         if compose_content:
             try:
                 data = yaml.safe_load(compose_content)
