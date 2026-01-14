@@ -72,6 +72,7 @@ Build status for daemonless container images.
 
 | App | Build Status | Last Commit |
 |-----|--------------|-------------|
+| [immich](https://github.com/daemonless/immich) | [![build](https://img.shields.io/github/actions/workflow/status/daemonless/immich/build.yaml?label=)](https://github.com/daemonless/immich/actions/workflows/build.yaml) | [![commit](https://img.shields.io/github/last-commit/daemonless/immich?label=)](https://github.com/daemonless/immich/commits) |
 | [immich-ml](https://github.com/daemonless/immich-ml) | [![build](https://img.shields.io/github/actions/workflow/status/daemonless/immich-ml/build.yaml?label=)](https://github.com/daemonless/immich-ml/actions/workflows/build.yaml) | [![commit](https://img.shields.io/github/last-commit/daemonless/immich-ml?label=)](https://github.com/daemonless/immich-ml/commits) |
 | [immich-server](https://github.com/daemonless/immich-server) | [![build](https://img.shields.io/github/actions/workflow/status/daemonless/immich-server/build.yaml?label=)](https://github.com/daemonless/immich-server/actions/workflows/build.yaml) | [![commit](https://img.shields.io/github/last-commit/daemonless/immich-server?label=)](https://github.com/daemonless/immich-server/commits) |
 
@@ -90,11 +91,5 @@ Build status for daemonless container images.
 | [uptime-kuma](https://github.com/daemonless/uptime-kuma) | [![build](https://img.shields.io/github/actions/workflow/status/daemonless/uptime-kuma/build.yaml?label=)](https://github.com/daemonless/uptime-kuma/actions/workflows/build.yaml) | [![commit](https://img.shields.io/github/last-commit/daemonless/uptime-kuma?label=)](https://github.com/daemonless/uptime-kuma/commits) |
 | [vaultwarden](https://github.com/daemonless/vaultwarden) | [![build](https://img.shields.io/github/actions/workflow/status/daemonless/vaultwarden/build.yaml?label=)](https://github.com/daemonless/vaultwarden/actions/workflows/build.yaml) | [![commit](https://img.shields.io/github/last-commit/daemonless/vaultwarden?label=)](https://github.com/daemonless/vaultwarden/commits) |
 
-## Uncategorized
-
-| App | Build Status | Last Commit |
-|-----|--------------|-------------|
-| [immich](https://github.com/daemonless/immich) | [![build](https://img.shields.io/github/actions/workflow/status/daemonless/immich/build.yaml?label=)](https://github.com/daemonless/immich/actions/workflows/build.yaml) | [![commit](https://img.shields.io/github/last-commit/daemonless/immich?label=)](https://github.com/daemonless/immich/commits) |
-
 ---
-*Last Updated: 2026-01-14 23:03 UTC*
+*Last Updated: 2026-01-14 23:09 UTC*
