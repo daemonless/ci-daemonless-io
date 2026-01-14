@@ -3,123 +3,77 @@
 Generate CI status page from daemonless repos.
 Organizes images by category and shows build status.
 """
-import subprocess
+import os
 import json
 import yaml
 import datetime
 from collections import defaultdict
+from pathlib import Path
 
 OUTPUT_FILE = "docs/index.md"
-SKIP_REPOS = {"daemonless", "cit", "ci-daemonless-io", "freebsd-ports", "daemonless-io"}
+EXPLICIT_SKIP = {"daemonless", "cit", "ci-daemonless-io", "freebsd-ports", "daemonless-io", ".woodpecker"}
 
-def gh_json(command):
+def get_local_repos(root_path):
+    """Get list of subdirectories in the root path that look like repos."""
+    repos = []
+    root = Path(root_path)
+    if not root.exists():
+        print(f"Error: {root_path} does not exist.")
+        return []
 
-    """Run gh command and return JSON."""
-
-    try:
-
-        result = subprocess.run(
-
-            command, capture_output=True, text=True, check=True
-
-        )
-
-        if not result.stdout.strip():
-
-            return None
-
-        return json.loads(result.stdout)
-
-    except (subprocess.CalledProcessError, json.JSONDecodeError):
-
-        return None
-
-
-
-def get_repos():
-
-    """Get list of public repos."""
-
-    print("Fetching repository list...")
-
-    cmd = ["gh", "repo", "list", "daemonless", "--limit", "100", "--json", "name,isPrivate"]
-
-    data = gh_json(cmd)
-
-    if data:
-
-        return [r for r in data if not r['isPrivate']]
-
-    return []
-
-
-
-def get_file_content(repo, path):
-
-    """Fetch file content from repo."""
-
-    cmd = ["gh", "api", f"repos/daemonless/{repo}/contents/{path}"]
-
-    data = gh_json(cmd)
-
-    if data and isinstance(data, dict) and 'content' in data:
-
-        import base64
-
-        try:
-
-            return base64.b64decode(data['content']).decode('utf-8')
-
-        except Exception as e:
-
-            print(f"Error decoding {repo}/{path}: {e}")
-
-    return None
+    for item in root.iterdir():
+        if item.is_dir() and item.name not in EXPLICIT_SKIP and not item.name.startswith('.'):
+            # Check if it has a build workflow, indicating it's a built image
+            if (item / ".github" / "workflows" / "build.yaml").exists():
+                 repos.append(item)
+    return repos
 
 def main():
-    repos = get_repos()
+    # daemonless/ci-daemonless-io/generate_status.py -> daemonless/
+    root_path = Path("..") 
+    repos = get_local_repos(root_path)
+    
     if not repos:
         print("No repositories found.")
         return
 
+    # Store list of config dicts
     by_category = defaultdict(list)
     
-    print("Processing repositories...")
-    for r in repos:
-        name = r['name']
-        if name in SKIP_REPOS:
-            continue
-            
-        print(f"  - {name}")
+    print(f"Found {len(repos)} repositories.")
+    
+    for repo_path in repos:
+        name = repo_path.name
+        print(f"Processing {name}...")
         
-        # Check if CI exists
-        # We assume if build.yaml exists, CI is active
-        # We can check existence efficiently via API without content
-        has_ci = False
-        try:
-            subprocess.run(["gh", "api", f"repos/daemonless/{name}/contents/.github/workflows/build.yaml"], 
-                         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
-            has_ci = True
-        except:
-            pass
-            
-        if not has_ci:
-            continue
-
-        # Get Category from compose.yaml or container-compose.yml
+        # Default Metadata
         category = "Uncategorized"
-        compose_content = get_file_content(name, "compose.yaml")
-        if not compose_content:
-            compose_content = get_file_content(name, "container-compose.yml")
-            
-        if compose_content:
-            try:
-                data = yaml.safe_load(compose_content)
-                category = data.get('x-daemonless', {}).get('category', 'Uncategorized')
-            except:
-                pass
+        icon = ":material-docker:"
+        upstream_url = None
+        description = ""
         
-        by_category[category].append(name)
+        compose_file = repo_path / "compose.yaml"
+        if not compose_file.exists():
+            compose_file = repo_path / "container-compose.yml"
+            
+        if compose_file.exists():
+            try:
+                with open(compose_file, 'r') as f:
+                    data = yaml.safe_load(f)
+                    meta = data.get('x-daemonless', {})
+                    category = meta.get('category', 'Uncategorized')
+                    icon = meta.get('icon', ':material-docker:')
+                    upstream_url = meta.get('upstream_url')
+                    description = meta.get('description', '')
+            except Exception as e:
+                print(f"  Error reading compose file for {name}: {e}")
+        
+        by_category[category].append({
+            "name": name,
+            "icon": icon,
+            "upstream_url": upstream_url,
+            "description": description
+        })
 
     # Generate Markdown
     print("Generating Markdown...")
@@ -130,8 +84,7 @@ def main():
         "",
         "Build status for daemonless container images.",
         "",
-        "!!! tip \"Gold Standard\"",
-        "    Images in the **Media Management** and **Infrastructure** categories are prioritized for the highest quality standards.",
+        "[Main Documentation](https://daemonless.io){ .md-button }",
         ""
     ]
 
@@ -147,13 +100,30 @@ def main():
     for cat in cats:
         lines.append(f"## {cat}")
         lines.append("")
-        lines.append("| App | Build Status | Last Commit |")
-        lines.append("|-----|--------------|-------------|")
+        # Updated columns: App | Description | Repo | Upstream | Build Status | Last Commit
+        lines.append("| App | Description | Repo | Upstream | Build Status | Last Commit |")
+        lines.append("|-----|-------------|------|----------|--------------|-------------|")
         
-        for name in sorted(by_category[cat]):
+        # Sort by name
+        for item in sorted(by_category[cat], key=lambda x: x['name']):
+            name = item['name']
+            icon = item['icon']
+            upstream = item['upstream_url']
+            desc = item['description']
+            
+            # Links
+            doc_link = f"[{icon} {name}](https://daemonless.io/images/{name})"
+            repo_link = f"[:simple-github:](https://github.com/daemonless/{name})"
+            
+            if upstream:
+                upstream_link = f"[:material-link-variant:]({upstream})"
+            else:
+                upstream_link = "-"
+
             build_badge = f"[![build](https://img.shields.io/github/actions/workflow/status/daemonless/{name}/build.yaml?label=)](https://github.com/daemonless/{name}/actions/workflows/build.yaml)"
             commit_badge = f"[![commit](https://img.shields.io/github/last-commit/daemonless/{name}?label=)](https://github.com/daemonless/{name}/commits)"
-            lines.append(f"| [{name}](https://github.com/daemonless/{name}) | {build_badge} | {commit_badge} |")
+            
+            lines.append(f"| {doc_link} | {desc} | {repo_link} | {upstream_link} | {build_badge} | {commit_badge} |")
         
         lines.append("")
 
