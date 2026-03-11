@@ -12,12 +12,6 @@ Build status for daemonless container images.
 | [:simple-freebsd: base](https://daemonless.io/images/base) | FreeBSD base image with s6 supervision | [:simple-github:](https://github.com/daemonless/base) | [:material-link-variant:](https://github.com/freebsd/freebsd-src) | [![build](https://img.shields.io/github/actions/workflow/status/daemonless/base/build.yaml?label=)](https://github.com/daemonless/base/actions/workflows/build.yaml) | [![commit](https://img.shields.io/github/last-commit/daemonless/base?label=)](https://github.com/daemonless/base/commits) |
 | [:simple-nginx: nginx-base](https://daemonless.io/images/nginx-base) | Shared base image for Nginx-based applications. | [:simple-github:](https://github.com/daemonless/nginx-base) | [:material-link-variant:](https://github.com/daemonless/nginx-base) | [![build](https://img.shields.io/github/actions/workflow/status/daemonless/nginx-base/build.yaml?label=)](https://github.com/daemonless/nginx-base/actions/workflows/build.yaml) | [![commit](https://img.shields.io/github/last-commit/daemonless/nginx-base?label=)](https://github.com/daemonless/nginx-base/commits) |
 
-## Apps
-
-| App | Description | Repo | Upstream | Build Status | Last Commit |
-|-----|-------------|------|----------|--------------|-------------|
-| [:material-apps: s](https://daemonless.io/images/s) | Sonarr on FreeBSD. | [:simple-github:](https://github.com/daemonless/s) | [:material-link-variant:](https://github.com/daemonless/Sonarr) | [![build](https://img.shields.io/github/actions/workflow/status/daemonless/s/build.yaml?label=)](https://github.com/daemonless/s/actions/workflows/build.yaml) | [![commit](https://img.shields.io/github/last-commit/daemonless/s?label=)](https://github.com/daemonless/s/commits) |
-
 ## Communication
 
 | App | Description | Repo | Upstream | Build Status | Last Commit |
@@ -110,4 +104,4 @@ Build status for daemonless container images.
 | [:simple-bitwarden: vaultwarden](https://daemonless.io/images/vaultwarden) | Vaultwarden (Bitwarden compatible backend) on FreeBSD. | [:simple-github:](https://github.com/daemonless/vaultwarden) | [:material-link-variant:](https://github.com/dani-garcia/vaultwarden) | [![build](https://img.shields.io/github/actions/workflow/status/daemonless/vaultwarden/build.yaml?label=)](https://github.com/daemonless/vaultwarden/actions/workflows/build.yaml) | [![commit](https://img.shields.io/github/last-commit/daemonless/vaultwarden?label=)](https://github.com/daemonless/vaultwarden/commits) |
 
 ---
-*Last Updated: 2026-03-10 21:06 UTC*
+*Last Updated: 2026-03-11 00:04 UTC*
