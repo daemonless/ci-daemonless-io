@@ -3,9 +3,6 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
-  schedule:
-    # Regenerate daily at midnight UTC
-    - cron: '0 0 * * *'
   workflow_dispatch:
 
 permissions:
@@ -26,21 +23,7 @@ jobs:
           python-version: '3.x'
 
       - name: Install dependencies
-        run: pip install mkdocs-material PyYAML
-
-      - name: Regenerate status page
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          python3 generate_status.py
-
-      - name: Commit updated page
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs/index.md
-          git diff --staged --quiet || git commit -m "update status page"
-          git push || true
+        run: pip install mkdocs-material
 
       - name: Build site
         run: mkdocs build
